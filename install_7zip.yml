@@ -1,0 +1,25 @@
+- name: Install 7-Zip on Windows 10 VM
+  hosts: windows
+  tasks:
+    - name: Download 7-Zip installer
+      win_get_url:
+        url: https://www.7-zip.org/a/7z1900-x64.exe
+        dest: C:\Users\dania\7z1900-x64.exe
+
+    - name: Install 7-Zip
+      win_shell: C:\Users\dania\7z1900-x64.exe /S
+      args:
+        chdir: C:\Users\dania
+
+    - name: Verify 7-Zip installation
+      win_shell: |
+        if (Test-Path "C:\Program Files\7-Zip\7z.exe") {
+          Write-Output "7-Zip is installed."
+        } else {
+          Write-Output "7-Zip installation failed."
+        }
+      register: install_output
+
+    - name: Print installation verification
+      debug:
+        var: install_output.stdout_lines
