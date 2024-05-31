@@ -3,7 +3,7 @@
   hosts: all
   tasks:
     - name: Run powershell script
-      win_shell: C:\Users\dania\getprocess.ps1 >> C:\Users\dania\getprocesslog.txt\
+      win_shell: C:\Users\dania\getprocess.ps1 >> C:\Users\dania\getprocesslog.txt
 
     - name: Change working directory to the correct directory before executing the command
       win_shell: C:\getprocess.ps1 >> C:\getprocesslog1.txt
