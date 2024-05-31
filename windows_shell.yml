@@ -19,7 +19,7 @@
         var: log_output.stdout_lines
       
     - name: Run command with idempotent check on what it creates, will only run when somedir/somelog.txt does not exist
-      win_shell: C:\getprocess.ps1 >> C:\getprocesslog2.txt
+      win_shell: .\getprocess.ps1 >> C:\getprocesslog2.txt
       args:
         chdir: C:\Users\dania
         creates: C:\getprocesslog2.txt
