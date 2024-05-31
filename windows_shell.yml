@@ -3,4 +3,39 @@
   hosts: all
   tasks:
     - name: Run powershell script
-      win_shell: C:\Users\dania\getprocess.ps1 >> C:\Users\dania\getprocesslog.txt
+      win_shell: C:\Users\dania\getprocess.ps1 >> C:\Users\dania\getprocesslog.txt\
+
+    - name: Change working directory to the correct directory before executing the command
+      win_shell: C:\getprocess.ps1 >> C:\getprocesslog1.txt
+      args:
+        chdir: C:\Users\dania
+      
+    - name: Run command with idempotent check on what it creates, will only run when somedir/somelog.txt does not exist
+      win_shell: C:\getprocess.ps1 >> C:\getprocesslog2.txt
+      args:
+        chdir: C:\Users\dania
+        creates: C:\getprocesslog2.txt
+
+    - name: Run command under a non-powershell interpreter (CMD)
+      win_shell: echo %HOMEDIR%
+      args:
+        executable: cmd
+      register: homedir_out
+
+    - name: Run multi-lined shell commands
+      win_shell: |
+        $value = Test-Path -Path C:\temp
+        if ($value) {
+          Remove-Item -Path C:\temp -Force
+        }
+        New-Item -Path C:\temp -ItemType Directory
+
+    - name: Retrive the input based on stdin
+      win_shell: '$string = [Console]::In.ReadToEnd(); Write-Output $string.Trim()'
+      args:
+        stdin: Input message
+
+    - name: Run a powershell script with -NoProfile
+      win_shell: C:\Users\dania\getprocess.ps1
+      args:
+        no_profile: true
