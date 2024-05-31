@@ -6,9 +6,17 @@
       win_shell: C:\Users\dania\getprocess.ps1 >> C:\Users\dania\getprocesslog.txt
 
     - name: Change working directory to the correct directory before executing the command
-      win_shell: C:\getprocess.ps1 >> C:\getprocesslog1.txt
+      win_shell: .\getprocess.ps1 >> C:\getprocesslog1.txt
       args:
         chdir: C:\Users\dania
+
+    - name: Check the log file
+      win_shell: Get-Content C:\getprocesslog1.txt
+      register: log_output
+
+    - name: Print log output
+      debug:
+        var: log_output.stdout_lines
       
     - name: Run command with idempotent check on what it creates, will only run when somedir/somelog.txt does not exist
       win_shell: C:\getprocess.ps1 >> C:\getprocesslog2.txt
