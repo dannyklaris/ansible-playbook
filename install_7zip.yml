@@ -1,4 +1,5 @@
 - name: Install 7-Zip on Windows 10 VM
+  hosts: all
   tasks:
     - name: Download 7-Zip installer
       win_get_url:
