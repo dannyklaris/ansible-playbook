@@ -1,0 +1,6 @@
+---
+- name: Running Powershell Script and Output to other text file
+  hosts: all
+  tasks:
+    - name: Run powershell script
+      win_shell: C:\Users\dania\getprocess.ps1 >> C:\Users\dania\getprocesslog.txt
