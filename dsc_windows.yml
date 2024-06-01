@@ -5,29 +5,8 @@
   tasks:
     - name: All tasks
       block:
-        - name: Ensure PowerShellGet module is installed
-          community.windows.win_psmodule:
-            name: PowerShellGet
-            state: present
-
-        - name: Ensure NuGet package provider is installed
-          community.windows.win_command:
-            command: Install-PackageProvider -Name NuGet -Force
-          args:
-            creates: C:\ProgramData\PackageManagement\ProviderAssemblies\nuget
-
-        - name: Ensure PSDscResources module is installed
-          community.windows.win_psmodule:
-            name: PSDscResources
-            state: present
-
-        - name: Ensure xPSDesiredStateConfiguration module is installed
-          community.windows.win_psmodule:
-            name: xPSDesiredStateConfiguration
-            state: present
-
         - name: Configure the Local Configuration Manager (LCM)
-          community.windows.win_shell: |
+          win_shell: |
             [DSCLocalConfigurationManager()]
             configuration LCMConfig {
                 Node localhost {
@@ -42,7 +21,7 @@
             Set-DscLocalConfigurationManager -Path "C:\DSC\LCM"
 
         - name: Create and apply DSC configuration to set the time zone
-          community.windows.win_shell: |
+          win_shell: |
             Configuration TimeZoneConfig {
                 Import-DscResource -ModuleName xTimeZone
 
@@ -57,7 +36,7 @@
             Start-DscConfiguration -Path "C:\DSC\TimeZone" -Wait -Verbose
 
         - name: Verify the time zone
-          community.windows.win_shell: Get-TimeZone
+          win_shell: Get-TimeZone
           register: timezone_result
 
         - name: Display time zone result
