@@ -1,9 +1,9 @@
 ---
 - name: Manage Windows Update Service
-  hosts: windows
+  hosts: all
   tasks:
     - name: Ensure Windows Update service is running and set to automatic
-      community.windows.win_dsc:
+      win_dsc:
         resource_name: Service
         Name: wuauserv
         State: Running
