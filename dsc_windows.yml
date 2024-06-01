@@ -1,27 +1,73 @@
 ---
-- name: Manage Windows Update Service
-  hosts: all
+- name: Setup DSC on Windows 10 VM
+  hosts: windows
   tasks:
-    - name: Ensure Windows Update service is running and set to automatic
-      win_dsc:
-        resource_name: Service
-        Name: wuauserv
-        State: Running
-        StartUpType: Automatic
+    - name: All tasks
+      block:
+        - name: Ensure PowerShellGet module is installed
+          win_psmodule:
+            name: PowerShellGet
+            state: present
 
-    - name: Set Time Zone to Pacific Standard Time
-      win_dsc:
-        resource_name: TimeZone
-        IsSingleInstance: Yes
-        TimeZone: "Pacific Standard Time"
+        - name: Ensure NuGet package provider is installed
+          win_command: Install-PackageProvider -Name NuGet -Force
+          args:
+            creates: C:\ProgramData\PackageManagement\ProviderAssemblies\nuget
 
-    - name: Create file with some text
-      win_dsc:
-        resource_name: File
-        DestinationPath: C:\temp\file
-        Contents: |
-            Hello
-            World
-        Ensure: Present
-        Type: File
+        - name: Ensure PSDscResources module is installed
+          win_psmodule:
+            name: PSDscResources
+            state: present
 
+        - name: Ensure xPSDesiredStateConfiguration module is installed
+          win_psmodule:
+            name: xPSDesiredStateConfiguration
+            state: present
+
+        - name: Configure the Local Configuration Manager (LCM)
+          win_shell: |
+            [DSCLocalConfigurationManager()]
+            configuration LCMConfig {
+                Node localhost {
+                    Settings {
+                        ConfigurationMode = 'ApplyAndMonitor'
+                        RebootNodeIfNeeded = $true
+                        RefreshMode = 'Push'
+                    }
+                }
+            }
+            LCMConfig -OutputPath "C:\DSC\LCM"
+            Set-DscLocalConfigurationManager -Path "C:\DSC\LCM"
+
+        - name: Create and apply DSC configuration to set the time zone
+          win_shell: |
+            Configuration TimeZoneConfig {
+                Import-DscResource -ModuleName xTimeZone
+
+                Node 'localhost' {
+                    xTimeZone TimeZone {
+                        IsSingleInstance = 'Yes'
+                        TimeZone = 'Pacific Standard Time'
+                    }
+                }
+            }
+            TimeZoneConfig -OutputPath "C:\DSC\TimeZone"
+            Start-DscConfiguration -Path "C:\DSC\TimeZone" -Wait -Verbose
+
+        - name: Verify the time zone
+          win_shell: Get-TimeZone
+          register: timezone_result
+
+        - name: Display time zone result
+          debug:
+            var: timezone_result.stdout_lines
+
+      rescue:
+        - name: Handle any errors in the block
+          debug:
+            msg: "An error occurred, but we're continuing."
+
+        # Optionally, you can add more tasks to handle errors
+        - name: Log error details
+          debug:
+            var: ansible_failed_task
