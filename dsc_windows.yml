@@ -1,0 +1,27 @@
+---
+- name: Manage Windows Update Service
+  hosts: all
+  tasks:
+    - name: Ensure Windows Update service is running and set to automatic
+      win_dsc:
+        resource_name: Service
+        Name: wuauserv
+        State: Running
+        StartUpType: Automatic
+
+    - name: Set Time Zone to Pacific Standard Time
+      win_dsc:
+        resource_name: TimeZone
+        IsSingleInstance: Yes
+        TimeZone: "Pacific Standard Time"
+
+    - name: Create file with some text
+      win_dsc:
+        resource_name: File
+        DestinationPath: C:\temp\file
+        Contents: |
+            Hello
+            World
+        Ensure: Present
+        Type: File
+
