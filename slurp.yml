@@ -4,6 +4,6 @@
     src: C:\getprocesslog1.txt
   register: file
 
-- name: Print returned information
+- name: Print returned information hehe
   ansible.builtin.debug:
     msg: "{{ file['content'] | b64decode }}"
