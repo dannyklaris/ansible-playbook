@@ -1,0 +1,9 @@
+---
+- name: Fetch the getprocesslog.txt file on a Windows host
+  ansible.windows.slurp:
+    src: C:\getprocesslog1.txt
+  register: file
+
+- name: Print returned information
+  ansible.builtin.debug:
+    msg: "{{ file['content'] | b64decode }}"
