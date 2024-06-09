@@ -9,4 +9,4 @@
 
     - name: Print returned information hehe
       ansible.builtin.debug:
-        msg: "{{ file['content'] | b64decode }}"
+        msg: "{{ file['content'] | base64 }}"
