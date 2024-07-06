@@ -1,0 +1,11 @@
+---
+- hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Create a server inventory file with the hostname as the filename and App ID in its content
+      ansible.builtin.copy:
+        dest: ./rfpinfg0197.yaml
+        content: |
+          ApplicationID:
+            - 49859
+
