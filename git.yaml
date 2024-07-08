@@ -32,8 +32,6 @@
 
     - name: check if remote repo exists
       command: git remote
-      args:
-        chdir: /home/dk139311/ansible-git
       register: git_remotes
 
     - name: add remote repo
