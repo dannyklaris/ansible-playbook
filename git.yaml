@@ -49,11 +49,11 @@
       register: git_branches
 
     - name: create branch
-      command: git branch test11
-      when: "'test11' not in git_branches.stdout"
+      command: git branch ansible-git
+      when: "'ansible-git' not in git_branches.stdout"
 
     - name: switch to new branch
-      command: git checkout test11
+      command: git checkout ansible-git
 
     - name: Create a server inventory file with the hostname as the filename and App ID in its content
       ansible.builtin.copy:
@@ -69,7 +69,7 @@
       command: git commit -m "added new server inventory file ("{{ VM_name }}".yaml) "
 
     - name: add file to push
-      command: git push --set-upstream danny test11
+      command: git push --set-upstream danny ansible-git
 
 
     
