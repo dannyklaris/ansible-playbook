@@ -1,0 +1,83 @@
+---
+- hosts: localhost
+  gather_facts: no
+  vars:
+    git_username: dannyklaris
+    git_email: danialdakmal@gmail.com
+    VM_name: rfp303953
+    App_ID: 39593
+  tasks:
+    # - name: clone gitlab cad local EWS repo
+    #   command: git clone https://gitlab.cad.local/ews/ansible-ews-windows.git
+    - name: list the git config information
+      command: git config --list
+      register: gitconfig
+    - debug:
+        var: gitconfig
+
+    - name: setting up git username
+      command: git config --global user.name "{{ git_username }}"
+
+    - name: setting up git email
+      command: git config --global user.email " {{ git_email }}"
+
+    - name: list the git config information
+      command: git config --list
+      register: gitconfig
+    - debug:
+        var: gitconfig
+
+    - name: initalize git
+      command: git init
+
+    - name: check if remote repo exists
+      command: git remote
+      args:
+        chdir: /home/dk139311/ansible-git
+      register: git_remotes
+
+    - name: add remote repo
+      command: git remote add danny https://github.com/dannyklaris/ansible-playbook
+      args:
+        chdir: /home/dk139311/ansible-git
+      when: "'danny' not in git_remotes.stdout"
+
+
+    - name: Pull the existing repo
+      command: git pull danny master
+
+    - name: check if remote branch exists
+      command: git branch
+      args:
+        chdir: /home/dk139311/ansible-git
+      register: git_branches
+
+    - name: create branch
+      command: git branch test11
+      when: "'test11' not in git_branches.stdout"
+
+    - name: switch to new branch
+      command: git checkout test11
+
+    - name: Create a server inventory file with the hostname as the filename and App ID in its content
+      ansible.builtin.copy:
+        dest: ./{{ VM_name }}.yaml
+        content: |
+          ApplicationID:
+            - "{{ App_ID }}" 
+
+    - name: add file to commit
+      command: git add .
+
+    - name: commit file
+      command: git commit -m "added new server inventory file ("{{ VM_name }}".yaml) "
+
+    - name: add file to push
+      command: git push --set-upstream danny test11
+
+
+    
+
+    
+
+      
