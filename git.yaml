@@ -42,7 +42,7 @@
 
 
     - name: Pull the existing repo
-      command: git pull danny master
+      command: git pull danny ansible-git
 
     - name: check if remote branch exists
       command: git branch
