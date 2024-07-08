@@ -38,8 +38,6 @@
 
     - name: add remote repo
       command: git remote add danny https://github.com/dannyklaris/ansible-playbook
-      args:
-        chdir: /home/dk139311/ansible-git
       when: "'danny' not in git_remotes.stdout"
 
 
@@ -48,8 +46,6 @@
 
     - name: check if remote branch exists
       command: git branch
-      args:
-        chdir: /home/dk139311/ansible-git
       register: git_branches
 
     - name: create branch
