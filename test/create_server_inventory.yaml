@@ -4,8 +4,11 @@
   tasks:
     - name: Create a server inventory file with the hostname as the filename and App ID in its content
       ansible.builtin.copy:
-        dest: ./rfpinfg0197.yaml
+        dest: ./"{{ VM_name }}".yaml
         content: |
           ApplicationID:
-            - 49859
+            - "{{ App_ID }}"
+
+# commit and push to the repo automatically
+# pull files in the repo, create new server inventory file, also create folders for the app id if it doesn't exist yet
 

@@ -1,0 +1,7 @@
+---
+- hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: clone gitlab cad local EWS repo
+      command: git clone https://gitlab.cad.local/ews/ansible-ews-windows.git
+      
